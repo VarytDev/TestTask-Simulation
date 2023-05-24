@@ -1,10 +1,10 @@
+using System.Collections;
 using UnityEngine;
 
 public class AgentSpawner : MonoBehaviour
 {
     [Header("References")]
-    [SerializeField] private ArenaVisualization arenaVisualization = null;
-    [SerializeField] private GameObject actorPrefab = null;
+    [SerializeField] private GameObject agentPrefab = null;
 
     [Header("Agent Spawn Settings")]
     [SerializeField][Range(3,5)] private int startAgentsCount = 3;
@@ -15,7 +15,25 @@ public class AgentSpawner : MonoBehaviour
     [SerializeField] private float spawnedAgentDefaultSpeed = 5f;
     [SerializeField] private int spawnedAgentDefaultHealth = 3;
 
-    public void InitializeSpawner()
+    private int spawnedAgentsCount = 0;
+    private ArenaVisualization arenaVisualization = null;
+    private Coroutine agentSpawnCoroutine = null;
+
+    public void InitializeSpawner(ArenaVisualization _targetArena)
+    {
+        arenaVisualization = _targetArena;
+
+        if (arenaVisualization == null || arenaVisualization.IsInitialized == false)
+        {
+            Debug.LogError("AgentSpawner :: ArenaVisualisation isn't valid. Aborting initialization!", this);
+            return;
+        }
+
+        spawnInitialActors();
+        startAgentSpawnCounter();
+    }
+
+    private void spawnInitialActors()
     {
         for (int i = 0; i < startAgentsCount; i++)
         {
@@ -23,13 +41,43 @@ public class AgentSpawner : MonoBehaviour
         }
     }
 
+    private void startAgentSpawnCounter()
+    {
+        stopAgentSpawnCoroutine();
+
+        agentSpawnCoroutine = StartCoroutine(agentSpawnCounter());
+    }
+
+    private void stopAgentSpawnCoroutine()
+    {
+        if (agentSpawnCoroutine != null)
+        {
+            StopCoroutine(agentSpawnCoroutine);
+            agentSpawnCoroutine = null;
+        }
+    }
+
+    private IEnumerator agentSpawnCounter()
+    {
+        while (spawnedAgentsCount >= maxAgentsCount)
+        {
+            yield return null;
+        }
+
+        yield return Waiters.WaitForSeconds(Random.Range(spawnTimeRange.x, spawnTimeRange.y));
+
+        spawnActor();
+        startAgentSpawnCounter();
+    }
+
     private void spawnActor()
     {
-        if (actorPrefab == null || arenaVisualization == null)
+        if (agentPrefab == null || arenaVisualization == null || arenaVisualization.IsInitialized == false)
         {
+            Debug.LogError("AgentSpawner :: Can't spawn agent! Some references are null!", this);
             return;
         }
 
-        Instantiate(actorPrefab, arenaVisualization.GetRandomPositionInsideArenaBounds(), Quaternion.identity, transform);
+        Instantiate(agentPrefab, arenaVisualization.GetRandomPositionInsideArenaBounds(), Quaternion.identity, transform);
     }
 }

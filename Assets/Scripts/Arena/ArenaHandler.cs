@@ -19,10 +19,11 @@ public class ArenaHandler : MonoBehaviour
     {
         if (arenaVisualization == null || agentSpawner == null)
         {
+            Debug.LogError("ArenaHandler :: Can't initialize! Some references are null!", this);
             return;
         }
 
         arenaVisualization.CreateArenaMesh(initialArenaPosition, initialArenaSize);
-        agentSpawner.InitializeSpawner();
+        agentSpawner.InitializeSpawner(arenaVisualization);
     }
 }

@@ -18,6 +18,9 @@ public class ArenaVisualization : MonoBehaviour
         public float MaxZ;
     }
 
+    public bool IsInitialized { get; private set; } = false;
+
+    [Header("References")]
     [SerializeField] private MeshFilter meshFilter = null;
 
     private Vector3 arenaPosition = Vector3.zero;
@@ -31,6 +34,7 @@ public class ArenaVisualization : MonoBehaviour
     {
         if(meshFilter == null && TryGetComponent(out meshFilter) == false)
         {
+            Debug.LogError("Can't intitialize arena! Some references are null!", this);
             return;
         }
 
@@ -56,6 +60,8 @@ public class ArenaVisualization : MonoBehaviour
         meshFilter.mesh.triangles = triangles;
 
         meshFilter.mesh.RecalculateNormals();
+
+        IsInitialized = true;
     }
 
     public Vector3 GetRandomPositionInsideArenaBounds()
