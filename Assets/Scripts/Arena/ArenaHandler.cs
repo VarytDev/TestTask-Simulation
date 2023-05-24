@@ -3,8 +3,8 @@ using UnityEngine;
 public class ArenaHandler : MonoBehaviour
 {
     [Header("References")]
-    [SerializeField] private ArenaVisualization arenaVisualization = null;
-    [SerializeField] private AgentSpawner agentSpawner = null;
+    [SerializeField] private ArenaVisualization arenaVisualizationComponent = null;
+    [SerializeField] private AgentSpawner agentSpawnerComponent = null;
 
     [Header("Arena Settings")]
     [SerializeField] private Vector3 initialArenaPosition = Vector3.zero;
@@ -17,13 +17,13 @@ public class ArenaHandler : MonoBehaviour
 
     public void InitializeArena()
     {
-        if (arenaVisualization == null || agentSpawner == null)
+        if (arenaVisualizationComponent == null || agentSpawnerComponent == null)
         {
             Debug.LogError("ArenaHandler :: Can't initialize! Some references are null!", this);
             return;
         }
 
-        arenaVisualization.CreateArenaMesh(initialArenaPosition, initialArenaSize);
-        agentSpawner.InitializeSpawner(arenaVisualization);
+        arenaVisualizationComponent.CreateArenaMesh(initialArenaPosition, initialArenaSize);
+        agentSpawnerComponent.InitializeSpawner(arenaVisualizationComponent);
     }
 }

@@ -16,14 +16,14 @@ public class AgentSpawner : MonoBehaviour
     [SerializeField] private int spawnedAgentDefaultHealth = 3;
 
     private int spawnedAgentsCount = 0;
-    private ArenaVisualization arenaVisualization = null;
+    private ArenaVisualization arenaVisualizationComponent = null;
     private Coroutine agentSpawnCoroutine = null;
 
     public void InitializeSpawner(ArenaVisualization _targetArena)
     {
-        arenaVisualization = _targetArena;
+        arenaVisualizationComponent = _targetArena;
 
-        if (arenaVisualization == null || arenaVisualization.IsInitialized == false)
+        if (arenaVisualizationComponent == null || arenaVisualizationComponent.IsInitialized == false)
         {
             Debug.LogError("AgentSpawner :: ArenaVisualisation isn't valid. Aborting initialization!", this);
             return;
@@ -76,15 +76,15 @@ public class AgentSpawner : MonoBehaviour
     {
         //TODO Add poolable agents
 
-        if (agentPrefab == null || arenaVisualization == null || arenaVisualization.IsInitialized == false)
+        if (agentPrefab == null || arenaVisualizationComponent == null || arenaVisualizationComponent.IsInitialized == false)
         {
             Debug.LogError("AgentSpawner :: Can't spawn agent! Some references are null!", this);
             return;
         }
-
+        
         spawnedAgentsCount++;
 
-        GameObject _newAgent = Instantiate(agentPrefab, arenaVisualization.GetRandomPositionInsideArenaBounds(), Quaternion.identity, transform);
+        GameObject _newAgent = Instantiate(agentPrefab, arenaVisualizationComponent.GetRandomPositionInsideArenaBounds(), Quaternion.identity, transform);
         AgentHandler _agentHandler = _newAgent.GetComponent<AgentHandler>();
 
         if (_agentHandler == null)
@@ -93,11 +93,11 @@ public class AgentSpawner : MonoBehaviour
             return;
         }
 
-        _agentHandler.InitializeAgent(arenaVisualization, spawnedAgentDefaultSpeed, spawnedAgentDefaultHealth);
-        _agentHandler.OnAgentDeath += onAgentDeath;
+        _agentHandler.InitializeAgent(arenaVisualizationComponent, spawnedAgentDefaultSpeed, spawnedAgentDefaultHealth);
+        _agentHandler.AgentHealthComponent.OnAgentDeath += onAgentDeath;
     }
 
-    private void onAgentDeath(AgentHandler _sender)
+    private void onAgentDeath(AgentHealth _sender)
     {
         spawnedAgentsCount--;
         _sender.OnAgentDeath -= onAgentDeath;

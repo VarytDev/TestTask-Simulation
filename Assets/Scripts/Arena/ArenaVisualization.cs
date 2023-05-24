@@ -21,7 +21,7 @@ public class ArenaVisualization : MonoBehaviour
     public bool IsInitialized { get; private set; } = false;
 
     [Header("References")]
-    [SerializeField] private MeshFilter meshFilter = null;
+    [SerializeField] private MeshFilter meshFilterComponent = null;
 
     private Vector3 arenaPosition = Vector3.zero;
     private Vector2 arenaSize = Vector2.zero;
@@ -32,7 +32,7 @@ public class ArenaVisualization : MonoBehaviour
 
     public void CreateArenaMesh(Vector3 _arenaPosition, Vector2 _arenaSize)
     {
-        if(meshFilter == null && TryGetComponent(out meshFilter) == false)
+        if(meshFilterComponent == null && TryGetComponent(out meshFilterComponent) == false)
         {
             Debug.LogError("Can't intitialize arena! Some references are null!", this);
             return;
@@ -56,10 +56,10 @@ public class ArenaVisualization : MonoBehaviour
             1, 2, 3
         };
 
-        meshFilter.mesh.vertices = vertices;
-        meshFilter.mesh.triangles = triangles;
+        meshFilterComponent.mesh.vertices = vertices;
+        meshFilterComponent.mesh.triangles = triangles;
 
-        meshFilter.mesh.RecalculateNormals();
+        meshFilterComponent.mesh.RecalculateNormals();
 
         IsInitialized = true;
     }

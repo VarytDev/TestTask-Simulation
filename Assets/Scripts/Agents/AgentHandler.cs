@@ -1,62 +1,21 @@
-using DG.Tweening;
 using UnityEngine;
 
 public class AgentHandler : MonoBehaviour
 {
-    public delegate void AgentDeathDelegate(AgentHandler _sender);
-    public AgentDeathDelegate OnAgentDeath;
-
-    private ArenaVisualization arenaVisualization = null;
-
-    private float currentSpeed = 0f;
-    private int currentHealth = 0;
-
-    private Tween movementTween = null;
+    [Header("References")]
+    public AgentHealth AgentHealthComponent = null;
+    [SerializeField] private AgentMovement agentMovementComponent = null;
 
     public void InitializeAgent(ArenaVisualization _arenaVisualization, float _initialSpeed, int _initialHealth)
     {
-        arenaVisualization = _arenaVisualization;
-
-        currentSpeed = _initialSpeed;
-        currentHealth = _initialHealth;
-
-        startWandering();
-    }
-
-    private void startWandering()
-    {
-        moveToRandomPosition(startWandering);
-    }
-
-    private void moveToRandomPosition(TweenCallback _onCompleateCallback = null)
-    {
-        if (arenaVisualization == null || arenaVisualization.IsInitialized == false)
+        if (_arenaVisualization == null || _arenaVisualization.IsInitialized == false)
         {
-            Debug.LogError("AgentHandler :: Can't access ArenaVisualization!", this);
-            return;
+            Debug.LogWarning("AgentHandler :: Can't initialize agent! Some references are null...", this);
         }
 
-        moveToPosition(arenaVisualization.GetRandomPositionInsideArenaBounds(), _onCompleateCallback);
-    }
+        agentMovementComponent.InitializeMovement(_arenaVisualization, _initialSpeed);
+        AgentHealthComponent.InitializeHealth(_initialHealth);
 
-    private void moveToPosition(Vector3 _targetPosition, TweenCallback _onCompleateCallback = null)
-    {
-        if (movementTween.IsActive() == true)
-        {
-            movementTween.Kill();
-        }
-
-        movementTween = transform.DOMove(_targetPosition, getMovementTime(_targetPosition))
-            .OnComplete(_onCompleateCallback);
-    }
-
-    private float getMovementTime(Vector3 _targetPosition)
-    {
-        return (_targetPosition - transform.position).magnitude / currentSpeed;
-    }
-
-    private void onAgentDeath()
-    {
-        OnAgentDeath?.Invoke(this);
+        agentMovementComponent.StartWandering();
     }
 }
