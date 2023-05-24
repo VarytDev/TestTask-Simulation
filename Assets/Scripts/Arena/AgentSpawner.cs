@@ -37,9 +37,11 @@ public class AgentSpawner : MonoBehaviour
     {
         for (int i = 0; i < startAgentsCount; i++)
         {
-            spawnActor();
+            spawnAgent();
         }
     }
+
+    //TODO Separate all spawn counter logic to another class?
 
     private void startAgentSpawnCounter()
     {
@@ -66,18 +68,38 @@ public class AgentSpawner : MonoBehaviour
 
         yield return Waiters.WaitForSeconds(Random.Range(spawnTimeRange.x, spawnTimeRange.y));
 
-        spawnActor();
+        spawnAgent();
         startAgentSpawnCounter();
     }
 
-    private void spawnActor()
+    private void spawnAgent()
     {
+        //TODO Add poolable agents
+
         if (agentPrefab == null || arenaVisualization == null || arenaVisualization.IsInitialized == false)
         {
             Debug.LogError("AgentSpawner :: Can't spawn agent! Some references are null!", this);
             return;
         }
 
-        Instantiate(agentPrefab, arenaVisualization.GetRandomPositionInsideArenaBounds(), Quaternion.identity, transform);
+        spawnedAgentsCount++;
+
+        GameObject _newAgent = Instantiate(agentPrefab, arenaVisualization.GetRandomPositionInsideArenaBounds(), Quaternion.identity, transform);
+        AgentHandler _agentHandler = _newAgent.GetComponent<AgentHandler>();
+
+        if (_agentHandler == null)
+        {
+            Debug.LogError("AgentSpawner :: Can't find AgnetHandler attached to agent prefab! Aborting agent initialization...", this);
+            return;
+        }
+
+        _agentHandler.InitializeAgent(arenaVisualization, spawnedAgentDefaultSpeed, spawnedAgentDefaultHealth);
+        _agentHandler.OnAgentDeath += onAgentDeath;
+    }
+
+    private void onAgentDeath(AgentHandler _sender)
+    {
+        spawnedAgentsCount--;
+        _sender.OnAgentDeath -= onAgentDeath;
     }
 }
