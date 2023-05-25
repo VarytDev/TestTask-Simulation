@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class AgentHealth : MonoBehaviour
+public class AgentHealth : MonoBehaviour, IDamagable
 {
     public delegate void AgentDeathDelegate(AgentHealth _sender);
     public AgentDeathDelegate OnAgentDeath;
@@ -12,8 +12,20 @@ public class AgentHealth : MonoBehaviour
         currnetHealth = _initialHealth;
     }
 
+    public void OnDamageTaken(int _damageToDeal)
+    {
+        currnetHealth -= _damageToDeal;
+
+        if (currnetHealth <= 0)
+        {
+            onAgentDeath();
+        }
+    }
+
     private void onAgentDeath()
     {
         OnAgentDeath?.Invoke(this);
+
+        Destroy(gameObject);
     }
 }

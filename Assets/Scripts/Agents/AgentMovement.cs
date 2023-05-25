@@ -47,7 +47,8 @@ public class AgentMovement : MonoBehaviour
         }
 
         movementTween = transform.DOMove(_targetPosition, getMovementTime(_targetPosition))
-            .OnComplete(_onCompleateCallback);
+            .OnComplete(_onCompleateCallback)
+            .SetEase(Ease.Linear);
     }
 
     private float getMovementTime(Vector3 _targetPosition)
