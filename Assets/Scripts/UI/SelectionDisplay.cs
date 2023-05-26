@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class SelectionDisplay : MonoBehaviour
 {
+    [Header("References")]
     [SerializeField] private TextMeshProUGUI agentNameField = null;
     [SerializeField] private TextMeshProUGUI agentHealthField = null;
 
