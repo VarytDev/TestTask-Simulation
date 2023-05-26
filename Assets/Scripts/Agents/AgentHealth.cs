@@ -10,6 +10,8 @@ public class AgentHealth : MonoBehaviour, IDamagable
 
     public int CurrnetHealth { get; private set; } = 0;
 
+    [SerializeField] private GameObject rootObject = null;
+
     public void InitializeHealth(int _initialHealth)
     {
         CurrnetHealth = _initialHealth;
@@ -31,6 +33,11 @@ public class AgentHealth : MonoBehaviour, IDamagable
     {
         OnAgentDeath?.Invoke(this);
 
-        Destroy(gameObject);
+        if(rootObject == null)
+        {
+            return;
+        }
+
+        Destroy(rootObject);
     }
 }

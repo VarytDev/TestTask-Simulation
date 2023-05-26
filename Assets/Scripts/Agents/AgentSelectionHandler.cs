@@ -16,6 +16,11 @@ public class AgentSelectionHandler : MonoBehaviour, IHoverable, ISelectable
 
     public void OnSelected()
     {
+        if (outlineComponent == null)
+        {
+            return;
+        }
+
         isSelected = true;
         outlineComponent.OutlineColor = selectedColor;
 
@@ -24,6 +29,11 @@ public class AgentSelectionHandler : MonoBehaviour, IHoverable, ISelectable
 
     public void OnDeselected()
     {
+        if (outlineComponent == null)
+        {
+            return;
+        }
+
         isSelected = false;
         outlineComponent.OutlineColor = hoverColor;
         outlineComponent.enabled = false;
@@ -33,12 +43,17 @@ public class AgentSelectionHandler : MonoBehaviour, IHoverable, ISelectable
 
     public void OnPointerEnter()
     {
+        if (outlineComponent == null)
+        {
+            return;
+        }
+
         outlineComponent.enabled = true;
     }
 
     public void OnPointerExit()
     {
-        if (isSelected == true)
+        if (outlineComponent == null || isSelected == true)
         {
             return;
         }

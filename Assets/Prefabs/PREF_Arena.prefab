@@ -26,7 +26,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 418754301193704513}
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 86.57, z: 0}
+  m_LocalPosition: {x: 0, y: 32.7, z: -0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -103,6 +103,7 @@ GameObject:
   - component: {fileID: 2459791132945173232}
   - component: {fileID: 1728613769493463279}
   - component: {fileID: 5501123930820971306}
+  - component: {fileID: 518179294788817816}
   m_Layer: 0
   m_Name: PREF_Arena
   m_TagString: Untagged
@@ -139,8 +140,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 588b8b9c8dc340f4dbd60491dd01958c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  arenaVisualization: {fileID: 6688988667195177485}
-  agentSpawner: {fileID: 5501123930820971306}
+  arenaVisualizationComponent: {fileID: 6688988667195177485}
+  agentSpawnerComponent: {fileID: 5501123930820971306}
   initialArenaPosition: {x: 0, y: 0, z: 0}
   initialArenaSize: {x: 10, y: 10}
 --- !u!114 &5501123930820971306
@@ -155,13 +156,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7add72b62643ec640b804756d622bf8d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  arenaVisualization: {fileID: 6688988667195177485}
-  actorPrefab: {fileID: 156253413138397430, guid: 7e6d957b69ffe7b4997256d26be0ec68, type: 3}
+  agentPrefab: {fileID: 156253413138397430, guid: 7e6d957b69ffe7b4997256d26be0ec68, type: 3}
   startAgentsCount: 3
   maxAgentsCount: 30
   spawnTimeRange: {x: 2, y: 6}
-  spawnedAgentDefaultSpeed: 5
+  spawnedAgentDefaultSpeed: 2
   spawnedAgentDefaultHealth: 3
+--- !u!114 &518179294788817816
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1078368746220920520}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d05f8745f89f34241b9e2e088d75027b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  interactionCheckRayLength: 50
+  interactionCheckLayerMask:
+    serializedVersion: 2
+    m_Bits: 8
 --- !u!1 &1872875011470623234
 GameObject:
   m_ObjectHideFlags: 0
@@ -258,4 +274,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc789b7d3e823e14e9e66c65432f8de2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  meshFilter: {fileID: 517711308452113604}
+  meshFilterComponent: {fileID: 0}
