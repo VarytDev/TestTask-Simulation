@@ -15,6 +15,7 @@ public class AgentSpawner : MonoBehaviour
     [SerializeField] private float spawnedAgentDefaultSpeed = 5f;
     [SerializeField] private int spawnedAgentDefaultHealth = 3;
 
+    private int agentsTotalCount = 0;
     private int spawnedAgentsCount = 0;
     private ArenaVisualization arenaVisualizationComponent = null;
     private Coroutine agentSpawnCoroutine = null;
@@ -81,7 +82,8 @@ public class AgentSpawner : MonoBehaviour
             Debug.LogError("AgentSpawner :: Can't spawn agent! Some references are null!", this);
             return;
         }
-        
+
+        agentsTotalCount++;
         spawnedAgentsCount++;
 
         GameObject _newAgent = Instantiate(agentPrefab, arenaVisualizationComponent.GetRandomPositionInsideArenaBounds(), Quaternion.identity, transform);
@@ -93,7 +95,7 @@ public class AgentSpawner : MonoBehaviour
             return;
         }
 
-        _agentHandler.InitializeAgent(arenaVisualizationComponent, spawnedAgentDefaultSpeed, spawnedAgentDefaultHealth);
+        _agentHandler.InitializeAgent(arenaVisualizationComponent, spawnedAgentDefaultSpeed, spawnedAgentDefaultHealth, agentsTotalCount);
         _agentHandler.AgentHealthComponent.OnAgentDeath += onAgentDeath;
     }
 

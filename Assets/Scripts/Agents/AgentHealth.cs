@@ -2,21 +2,26 @@ using UnityEngine;
 
 public class AgentHealth : MonoBehaviour, IDamagable
 {
+    public delegate void AgentDamageTakenDelegate(AgentHealth _sender);
+    public AgentDamageTakenDelegate OnAgentDamageTaken;
+
     public delegate void AgentDeathDelegate(AgentHealth _sender);
     public AgentDeathDelegate OnAgentDeath;
 
-    private int currnetHealth = 0;
+    public int CurrnetHealth { get; private set; } = 0;
 
     public void InitializeHealth(int _initialHealth)
     {
-        currnetHealth = _initialHealth;
+        CurrnetHealth = _initialHealth;
     }
 
     public void OnDamageTaken(int _damageToDeal)
     {
-        currnetHealth -= _damageToDeal;
+        CurrnetHealth -= _damageToDeal;
 
-        if (currnetHealth <= 0)
+        OnAgentDamageTaken?.Invoke(this);
+
+        if (CurrnetHealth <= 0)
         {
             onAgentDeath();
         }

@@ -41,13 +41,18 @@ public class SelectableFinder : MonoBehaviour
             return;
         }
 
+        if(currentHoverable != null && currentHoverable != _foundHoverable)
+        {
+            currentHoverable.OnPointerExit();
+        }
+
         currentHoverable = _foundHoverable;
         currentHoverable.OnPointerEnter();
     }
 
     private void handleSelectable(bool _wasHit, RaycastHit _hit)
     {
-        if (_wasHit == false || _hit.collider.TryGetComponent(out ISelectable _foundHoverable) == false)
+        if (_wasHit == false || _hit.collider.TryGetComponent(out ISelectable _foundSelectable) == false)
         {
             if (Input.GetMouseButtonDown(0) == false)
             {
@@ -65,12 +70,12 @@ public class SelectableFinder : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0))
         {
-            if (currentSelectable != null && currentSelectable != _foundHoverable)
+            if (currentSelectable != null && currentSelectable != _foundSelectable)
             {
                 currentSelectable.OnDeselected();
             }
 
-            currentSelectable = _foundHoverable;
+            currentSelectable = _foundSelectable;
             currentSelectable.OnSelected(); 
         }
     }
