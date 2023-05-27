@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class AgentSpawner : MonoBehaviour
 {
+    private const int AGENTS_COUNT_LIMIT = 30;
+
     [Header("References")]
     [SerializeField] private GameObject agentPrefab = null;
 
@@ -19,6 +21,12 @@ public class AgentSpawner : MonoBehaviour
     private int spawnedAgentsCount = 0;
     private ArenaVisualization arenaVisualizationComponent = null;
     private Coroutine agentSpawnCoroutine = null;
+
+    private void OnValidate()
+    {
+        maxAgentsCount = Mathf.Max(maxAgentsCount, 1);
+        maxAgentsCount = Mathf.Min(maxAgentsCount, AGENTS_COUNT_LIMIT);
+    }
 
     public void InitializeSpawner(ArenaVisualization _targetArena)
     {
@@ -80,6 +88,11 @@ public class AgentSpawner : MonoBehaviour
         if (agentPrefab == null || arenaVisualizationComponent == null || arenaVisualizationComponent.IsInitialized == false)
         {
             Debug.LogError("AgentSpawner :: Can't spawn agent! Some references are null!", this);
+            return;
+        }
+
+        if (spawnedAgentsCount >= maxAgentsCount)
+        {
             return;
         }
 
