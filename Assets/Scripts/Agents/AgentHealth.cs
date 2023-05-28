@@ -51,7 +51,7 @@ public class AgentHealth : MonoBehaviour, IDamagable
     {
         OnAgentDeath?.Invoke(this);
 
-        if(rootObject == null)
+        if (rootObject == null)
         {
             return;
         }

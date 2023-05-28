@@ -16,20 +16,20 @@ public class AgentHandler : MonoBehaviour
     {
         if (_arenaVisualization == null || _arenaVisualization.IsInitialized == false || agentMovementComponent == null || AgentHealthComponent == null || agentSelectionHandlerComponent == null)
         {
-            Debug.LogWarning("AgentHandler :: Can't initialize agent! Some references are null...", this);
+            Debug.LogError("AgentHandler :: Can't initialize agent! Some references are null...", this);
         }
 
         AgentNumber = _agentNumber;
 
-        if (agentMovementComponent.TryInitializeMovement(_arenaVisualization, _initialSpeed) == false)
+        if (agentMovementComponent.TryInitializeMovement(_arenaVisualization, AgentHealthComponent, _initialSpeed) == false)
         {
-            Debug.LogWarning("AgentHandler :: Failed to initialize movement!", this);
+            Debug.LogError("AgentHandler :: Failed to initialize movement!", this);
             return;
         }
 
         if (AgentHealthComponent.TryInitializeHealth(_initialHealth) == false)
         {
-            Debug.LogWarning("AgentHandler :: Failed to initialize health!", this);
+            Debug.LogError("AgentHandler :: Failed to initialize health!", this);
             return;
         }
 

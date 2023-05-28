@@ -29,6 +29,11 @@ public class SelectionDisplay : MonoBehaviour
     {
         setDisplayWindowState(false);
 
+        if (currentHandler == null)
+        {
+            return;
+        }
+
         currentHandler.AgentHealthComponent.OnAgentDamageTaken -= onAgentTakenDamage;
         currentHandler.AgentHealthComponent.OnAgentDeath -= onAgentDeath;
         currentHandler = null;
@@ -36,6 +41,11 @@ public class SelectionDisplay : MonoBehaviour
 
     private void onAgentTakenDamage(AgentHealth _sender)
     {
+        if (currentHandler == null)
+        {
+            return;
+        }
+
         updateDisplayData();
     }
 
@@ -46,7 +56,7 @@ public class SelectionDisplay : MonoBehaviour
 
     private void updateDisplayData()
     {
-        if (agentNameField == null || agentHealthField == null)
+        if (currentHandler == null || agentNameField == null || agentHealthField == null)
         {
             Debug.LogError("SelectionDisplay :: Some references are null. Can't update data!", this);
             return;
