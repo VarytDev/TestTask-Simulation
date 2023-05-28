@@ -8,13 +8,23 @@ public class AgentHealth : MonoBehaviour, IDamagable
     public delegate void AgentDeathDelegate(AgentHealth _sender);
     public AgentDeathDelegate OnAgentDeath;
 
+    public bool IsInitialized { get; private set; } = false;
     public int CurrnetHealth { get; private set; } = 0;
 
+    [Header("References")]
     [SerializeField] private GameObject rootObject = null;
 
-    public void InitializeHealth(int _initialHealth)
+    public bool TryInitializeHealth(int _initialHealth)
     {
         CurrnetHealth = _initialHealth;
+
+        if (checkIfDead() == true)
+        {
+            return false;
+        }
+
+        IsInitialized = true;
+        return true;
     }
 
     public void OnDamageTaken(int _damageToDeal)
@@ -23,10 +33,18 @@ public class AgentHealth : MonoBehaviour, IDamagable
 
         OnAgentDamageTaken?.Invoke(this);
 
-        if (CurrnetHealth <= 0)
+        checkIfDead();
+    }
+
+    private bool checkIfDead()
+    {
+        if (CurrnetHealth > 0)
         {
-            onAgentDeath();
+            return false;
         }
+
+        onAgentDeath();
+        return true;
     }
 
     private void onAgentDeath()

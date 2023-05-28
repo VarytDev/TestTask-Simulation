@@ -4,6 +4,9 @@ using UnityEngine;
 public class AgentSpawner : MonoBehaviour
 {
     private const int AGENTS_COUNT_LIMIT = 30;
+    private const int AGENTS_COUNT_MIN = 1;
+
+    public bool IsInitialized { get; private set; } = false;
 
     [Header("References")]
     [SerializeField] private GameObject agentPrefab = null;
@@ -16,6 +19,7 @@ public class AgentSpawner : MonoBehaviour
     [Header("Spawned Agent Default Settings")]
     [SerializeField] private float spawnedAgentDefaultSpeed = 5f;
     [SerializeField] private int spawnedAgentDefaultHealth = 3;
+    [SerializeField] private int spawnedAgentDefaultDamage = 1;
 
     private int agentsTotalCount = 0;
     private int spawnedAgentsCount = 0;
@@ -24,7 +28,7 @@ public class AgentSpawner : MonoBehaviour
 
     private void OnValidate()
     {
-        maxAgentsCount = Mathf.Max(maxAgentsCount, 1);
+        maxAgentsCount = Mathf.Max(maxAgentsCount, AGENTS_COUNT_MIN);
         maxAgentsCount = Mathf.Min(maxAgentsCount, AGENTS_COUNT_LIMIT);
     }
 
@@ -40,6 +44,8 @@ public class AgentSpawner : MonoBehaviour
 
         spawnInitialActors();
         startAgentSpawnCounter();
+
+        IsInitialized = true;
     }
 
     private void spawnInitialActors()
@@ -50,8 +56,42 @@ public class AgentSpawner : MonoBehaviour
         }
     }
 
-    //TODO Separate all spawn counter logic to another class?
+    private void spawnAgent()
+    {
+        if (agentPrefab == null || arenaVisualizationComponent == null || arenaVisualizationComponent.IsInitialized == false)
+        {
+            Debug.LogError("AgentSpawner :: Can't spawn agent! Some references are null!", this);
+            return;
+        }
 
+        if (spawnedAgentsCount >= maxAgentsCount)
+        {
+            return;
+        }
+
+        agentsTotalCount++;
+        spawnedAgentsCount++;
+
+        GameObject _newAgent = Instantiate(agentPrefab, arenaVisualizationComponent.GetRandomPositionInsideArenaBounds(), Quaternion.identity, transform);
+        AgentHandler _agentHandler = _newAgent.GetComponent<AgentHandler>();
+
+        if (_agentHandler == null)
+        {
+            Debug.LogError("AgentSpawner :: Can't find AgnetHandler attached to agent prefab! Aborting agent initialization...", this);
+            return;
+        }
+
+        _agentHandler.InitializeAgent(arenaVisualizationComponent, spawnedAgentDefaultSpeed, spawnedAgentDefaultHealth, agentsTotalCount, spawnedAgentDefaultDamage);
+        _agentHandler.AgentHealthComponent.OnAgentDeath += onAgentDeath;
+    }
+
+    private void onAgentDeath(AgentHealth _sender)
+    {
+        spawnedAgentsCount--;
+        _sender.OnAgentDeath -= onAgentDeath;
+    }
+
+    #region Spawner Counter
     private void startAgentSpawnCounter()
     {
         stopAgentSpawnCoroutine();
@@ -80,41 +120,5 @@ public class AgentSpawner : MonoBehaviour
         spawnAgent();
         startAgentSpawnCounter();
     }
-
-    private void spawnAgent()
-    {
-        //TODO Add poolable agents
-
-        if (agentPrefab == null || arenaVisualizationComponent == null || arenaVisualizationComponent.IsInitialized == false)
-        {
-            Debug.LogError("AgentSpawner :: Can't spawn agent! Some references are null!", this);
-            return;
-        }
-
-        if (spawnedAgentsCount >= maxAgentsCount)
-        {
-            return;
-        }
-
-        agentsTotalCount++;
-        spawnedAgentsCount++;
-
-        GameObject _newAgent = Instantiate(agentPrefab, arenaVisualizationComponent.GetRandomPositionInsideArenaBounds(), Quaternion.identity, transform);
-        AgentHandler _agentHandler = _newAgent.GetComponent<AgentHandler>();
-
-        if (_agentHandler == null)
-        {
-            Debug.LogError("AgentSpawner :: Can't find AgnetHandler attached to agent prefab! Aborting agent initialization...", this);
-            return;
-        }
-
-        _agentHandler.InitializeAgent(arenaVisualizationComponent, spawnedAgentDefaultSpeed, spawnedAgentDefaultHealth, agentsTotalCount);
-        _agentHandler.AgentHealthComponent.OnAgentDeath += onAgentDeath;
-    }
-
-    private void onAgentDeath(AgentHealth _sender)
-    {
-        spawnedAgentsCount--;
-        _sender.OnAgentDeath -= onAgentDeath;
-    }
+    #endregion
 }

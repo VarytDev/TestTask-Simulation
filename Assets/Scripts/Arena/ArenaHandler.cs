@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class ArenaHandler : MonoBehaviour
 {
+    public bool IsInitialized { get; private set; } = false;
+
     [Header("References")]
     [SerializeField] private ArenaVisualization arenaVisualizationComponent = null;
     [SerializeField] private AgentSpawner agentSpawnerComponent = null;
@@ -9,6 +11,7 @@ public class ArenaHandler : MonoBehaviour
     [Header("Arena Settings")]
     [SerializeField] private Vector3 initialArenaPosition = Vector3.zero;
     [SerializeField] private Vector2 initialArenaSize = new Vector2(10f, 10f);
+    [SerializeField] private float agentRadius = 0.5f;
 
     private void Start()
     {
@@ -23,7 +26,9 @@ public class ArenaHandler : MonoBehaviour
             return;
         }
 
-        arenaVisualizationComponent.CreateArenaMesh(initialArenaPosition, initialArenaSize);
+        arenaVisualizationComponent.CreateArenaMesh(initialArenaPosition, initialArenaSize, agentRadius);
         agentSpawnerComponent.InitializeSpawner(arenaVisualizationComponent);
+
+        IsInitialized = true;
     }
 }

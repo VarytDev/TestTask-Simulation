@@ -10,18 +10,19 @@ public class AgentMovement : MonoBehaviour
 
     private Tween movementTween = null;
 
-    public void InitializeMovement(ArenaVisualization _arenaVisualization, float _initialSpeed)
+    public bool TryInitializeMovement(ArenaVisualization _arenaVisualization, float _initialSpeed)
     {
         if (_arenaVisualization == null || _arenaVisualization.IsInitialized == false)
         {
             Debug.LogError("AgentMovement :: Can't initialize agent! Some references are null...", this);
-            return;
+            return false;
         }
 
         arenaVisualization = _arenaVisualization;
         currentSpeed = _initialSpeed;
 
         IsInitialized = true;
+        return true;
     }
 
     public void StartWandering()

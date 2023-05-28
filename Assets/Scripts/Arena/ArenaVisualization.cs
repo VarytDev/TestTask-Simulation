@@ -26,11 +26,12 @@ public class ArenaVisualization : MonoBehaviour
     private Vector3 arenaPosition = Vector3.zero;
     private Vector2 arenaSize = Vector2.zero;
     private ArenaBounds arenaBounds = new ArenaBounds();
+    private float agentRadius = 0f;
 
     private Vector3[] vertices = new Vector3[0];
     private int[] triangles = new int[0];
 
-    public void CreateArenaMesh(Vector3 _arenaPosition, Vector2 _arenaSize)
+    public void CreateArenaMesh(Vector3 _arenaPosition, Vector2 _arenaSize, float _agentRadius)
     {
         if(meshFilterComponent == null && TryGetComponent(out meshFilterComponent) == false)
         {
@@ -40,6 +41,7 @@ public class ArenaVisualization : MonoBehaviour
 
         arenaPosition = _arenaPosition;
         arenaSize = _arenaSize;
+        agentRadius = _agentRadius;
         arenaBounds = new ArenaBounds(-arenaSize.x /2f, arenaSize.x / 2f, -arenaSize.y / 2f, arenaSize.y / 2f);
 
         vertices = new Vector3[]
@@ -66,10 +68,9 @@ public class ArenaVisualization : MonoBehaviour
 
     public Vector3 GetRandomPositionInsideArenaBounds()
     {
-        float _randomX = Random.Range(arenaBounds.MinX, arenaBounds.MaxX);
-        float _randomZ = Random.Range(arenaBounds.MinZ, arenaBounds.MaxZ);
+        float _randomX = Random.Range(arenaBounds.MinX + agentRadius, arenaBounds.MaxX - agentRadius);
+        float _randomZ = Random.Range(arenaBounds.MinZ + agentRadius, arenaBounds.MaxZ - agentRadius);
 
-        //TODO include actor radius into calculations
         return arenaPosition + new Vector3(_randomX, 0f, _randomZ);
     }
 }

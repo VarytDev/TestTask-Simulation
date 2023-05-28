@@ -53,6 +53,7 @@ MonoBehaviour:
   AgentHealthComponent: {fileID: 8968280629188499818}
   agentMovementComponent: {fileID: 6755579837005192033}
   agentSelectionHandlerComponent: {fileID: 5243511830983314823}
+  agentWeaponComponent: {fileID: 1875577250129541215}
 --- !u!114 &6755579837005192033
 MonoBehaviour:
   m_ObjectHideFlags: 0

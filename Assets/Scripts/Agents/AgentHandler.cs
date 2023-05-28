@@ -2,14 +2,17 @@ using UnityEngine;
 
 public class AgentHandler : MonoBehaviour
 {
+    public bool IsInitialized { get; private set; } = false;
     public int AgentNumber { get; private set; } = 0;
 
     [Header("References")]
     public AgentHealth AgentHealthComponent = null;
+
     [SerializeField] private AgentMovement agentMovementComponent = null;
     [SerializeField] private AgentSelectionHandler agentSelectionHandlerComponent = null;
+    [SerializeField] private AgentWeapon agentWeaponComponent = null;
 
-    public void InitializeAgent(ArenaVisualization _arenaVisualization, float _initialSpeed, int _initialHealth, int _agentNumber)
+    public void InitializeAgent(ArenaVisualization _arenaVisualization, float _initialSpeed, int _initialHealth, int _agentNumber, int _weaponDamage)
     {
         if (_arenaVisualization == null || _arenaVisualization.IsInitialized == false || agentMovementComponent == null || AgentHealthComponent == null || agentSelectionHandlerComponent == null)
         {
@@ -18,12 +21,24 @@ public class AgentHandler : MonoBehaviour
 
         AgentNumber = _agentNumber;
 
-        agentMovementComponent.InitializeMovement(_arenaVisualization, _initialSpeed);
-        AgentHealthComponent.InitializeHealth(_initialHealth);
+        if (agentMovementComponent.TryInitializeMovement(_arenaVisualization, _initialSpeed) == false)
+        {
+            Debug.LogWarning("AgentHandler :: Failed to initialize movement!", this);
+            return;
+        }
+
+        if (AgentHealthComponent.TryInitializeHealth(_initialHealth) == false)
+        {
+            Debug.LogWarning("AgentHandler :: Failed to initialize health!", this);
+            return;
+        }
+
+        agentWeaponComponent.InitializeWeapon(_weaponDamage);
 
         agentMovementComponent.StartWandering();
 
         subscribeToEvents();
+        IsInitialized = true;
     }
 
     private void subscribeToEvents()
